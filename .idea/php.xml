@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="C:/composer/vendor/phpunit/php-token-stream" />
+      <path value="C:/composer/vendor/phpunit/phpunit-mock-objects" />
+      <path value="C:/composer/vendor/phpunit/php-code-coverage" />
+      <path value="C:/composer/vendor/phpunit/phpunit" />
+      <path value="C:/composer/vendor/symfony/yaml" />
+      <path value="C:/composer/vendor/doctrine/instantiator" />
+      <path value="C:/composer/vendor/sebastian/global-state" />
+      <path value="C:/composer/vendor/sebastian/comparator" />
+      <path value="C:/composer/vendor/sebastian/environment" />
+      <path value="C:/composer/vendor/sebastian/exporter" />
+      <path value="C:/composer/vendor/sebastian/recursion-context" />
+      <path value="C:/composer/vendor/sebastian/object-enumerator" />
+      <path value="C:/composer/vendor/sebastian/resource-operations" />
+      <path value="C:/composer/vendor/sebastian/code-unit-reverse-lookup" />
+      <path value="C:/composer/vendor/sebastian/diff" />
+      <path value="C:/composer/vendor/sebastian/version" />
+      <path value="C:/composer/vendor/webmozart/assert" />
+      <path value="C:/composer/vendor/desarrolla2/cache" />
+      <path value="C:/composer/vendor/vierbergenlars/php-semver" />
+      <path value="C:/composer/vendor/composer" />
+      <path value="C:/composer/vendor/psr/log" />
+      <path value="C:/composer/vendor/monolog/monolog" />
+      <path value="C:/composer/vendor/myclabs/deep-copy" />
+      <path value="C:/composer/vendor/phpspec/prophecy" />
+      <path value="C:/composer/vendor/phpunit/php-file-iterator" />
+      <path value="C:/composer/vendor/phpunit/php-timer" />
+      <path value="C:/composer/vendor/phpunit/php-text-template" />
+    </include_path>
+  </component>
+</project>

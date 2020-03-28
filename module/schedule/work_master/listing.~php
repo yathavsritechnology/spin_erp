@@ -1,0 +1,96 @@
+<?php
+if (!defined("_VALID_PHP"))
+    die('Direct access to this location is not allowed.');
+$url_path = MODURL."/schedule/work_master/";
+$dir_path = MODPATH."/schedule/work_master/";
+global $Work_Master, $core, $Workmastertime, $Department, $usercls, $Activity_Type;
+require_once(MODPATH . "/schedule/work_master/obj_work_master.php");
+require_once(SETPATH . "/menu/obj_menu.php");
+require_once(MODPATH . "/schedule/workmastertime/obj_workmastertime.php");
+require_once(MODPATH . "/schedule/activity_type/obj_activity_type.php");
+require_once(PAYPATH . "/department/obj_department.php");
+//$row_department = $Employee->getEmployees();
+
+$UserDepartmentId = $usercls->DepartmentId;
+$UserTypeId = $usercls->UserTypeId;
+?>
+<div class="inner">
+    <div class="content">
+        <div class="row-fluid marginleft0 margintop0 marginbottom0">
+            <div class="block-top-header">
+                <div class="row-fluid">
+                    <h1><img src="<?php echo GCONS_IMG_URL; ?>/agent.png" alt="" /><?= strtoupper(_work_master); ?></h1>
+                    <div class="divider"><span></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+            <div class="block-border">
+                <div class="block-header">
+                    <h2>
+                        <span>
+                            <a class="btn btn-warning" href="<?= $Work_Master->AddPath; ?>"><?= strtoupper(_ADD.' '._work_master); ?></a>
+                            <a class="btn btn-primary" href="<?= $Work_Master->DetailPath; ?>"><?= strtoupper("Detail Activity Master"); ?></a>
+                        </span>
+                        <?= _VIEW.' '._work_master; ?></h2>
+                </div>
+            </div>
+            <div class="block-content">
+                <div class="utility">
+                    <table class="table table-condensed">
+                        <tbody>
+                        <tr>
+                            <td>
+                                Schedule Type : <?= $Department->getScheduleTypeList($UserDepartmentId,"cmb_s_type", "0", "chzn-a", 1); ?>
+				Activity Type : <?= $Activity_Type->getActivity_TypeList(0,"cmb_s_atype", "0", "chzn-a", 0); ?>
+                                Department : <?= $Department->getDepartmentList(0,"cmb_s_department", "0", "chzn-a"); ?>
+                                Schedule Period : <?= $Workmastertime->getWorkmastertimeList(0, "cmb_s_period", "0", "chzn-a m0", 0); ?>
+                                <button onclick="loadList()" class="btn btn-info"><i class="splashy-zoom"></i>&nbsp;FIND</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="sortable"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    // <![CDATA[
+    $(document).ready(function () {
+        loadList();
+    });
+
+    function loadList() {
+        var menuid = <?php echo $core->menuid; ?>;
+        var cmb_s_department = document.getElementById('cmb_s_department').value;
+        var cmb_s_type = document.getElementById('cmb_s_type').value;
+        var cmb_s_period = document.getElementById('cmb_s_period').value;
+        $.ajax({
+            type: 'post',
+            url: "<?= $url_path; ?>ajax.php",
+            data: 'get_work_master_summary_list=1&menuid=' + menuid + "&cmb_s_department=" + cmb_s_department + "&cmb_s_period=" + cmb_s_period + "&cmb_s_type=" + cmb_s_type,
+            cache: false,
+            success: function (html) {
+                $("div.sortable").html(html);
+            }
+        });
+    }
+
+    function do_delete(id) {
+        var confirm_save= confirm ("<?= _DEL_CONFIRM1; ?> ?");
+        if(confirm_save) {
+            $.ajax({
+                type: 'post',
+                url: "<?= $url_path; ?>ajax.php",
+                data: 'deletework_master=1&id=' + id,
+                cache: false,
+                success: function (html) {
+                    $("#msgholder").html(html);
+                    loadList();
+                }
+            });
+        }
+    }
+</script>

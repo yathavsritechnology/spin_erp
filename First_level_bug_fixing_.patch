@@ -1,0 +1,1599 @@
+Index: module/master/tallyledger/tallyledger.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/tallyledger/tallyledger.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/tallyledger/tallyledger.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -32,9 +32,9 @@
+      *
+      * @return
+      */
+-    public function LoadTallyLedgerGrid()
++    public function LoadTallyLedgerGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "SELECT tl.TallyLedgerId, tl.TallyLedgerName,tl.IsActive FROM " . $Tableinfo->mas_tallyledger." as tl";
+         $sql .= " ORDER BY tl.TallyLedgerName ASC";
+@@ -63,9 +63,13 @@
+                 $c .= '<td>'.$row['TallyLedgerName'].'</td>';
+                 $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['TallyLedgerId'].'" class="sepV_a" title="'.TL_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['TallyLedgerId'] . '" class="sepV_a" title="' . TL_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.TL_Del.'" onclick="do_delete('.$row['TallyLedgerId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . TL_Del . '" onclick="do_delete(' . $row['TallyLedgerId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: module/master/city/city.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/city/city.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/city/city.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -30,9 +30,9 @@
+      *
+      * @return
+      */
+-    public function LoadCityGrid()
++    public function LoadCityGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "SELECT me.CityId, me.CityName, mc.StateName, me.IsActive FROM " . $Tableinfo->mas_city." as me";
+         $sql .= " LEFT JOIN " . $Tableinfo->mas_state." as mc on mc.StateId=me.StateId";
+@@ -66,9 +66,13 @@
+                 $c .= '<td>'.$row['StateName'].'</td>';
+ 	            $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['CityId'].'" class="sepV_a" title="Edit"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['CityId'] . '" class="sepV_a" title="Edit"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-	            $c .= '<a href="javascript:void(0);" title="'.CITY_Del.'" onclick="do_delete('.$row['CityId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . CITY_Del . '" onclick="do_delete(' . $row['CityId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: module/transaction/cottoninward/cottoninward.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/transaction/cottoninward/cottoninward.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/transaction/cottoninward/cottoninward.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -35,12 +35,17 @@
+      * Function Name : LoadCottonInwardGrid
+      * @return string
+      */
+-    public function LoadCottonInwardGrid()
++    public function LoadCottonInwardGrid($menuid=0, $FromDate="", $ToDate="", $SupplierId=0)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "select tci.CiId,tci.CiNo,tci.CiDate,tci.TotalBales,tci.TotalSupplierWt,tci.TotalMillsWt,ms.SupplierName from trn_cottoninward as tci 
+-left join mas_supplier as ms on ms.SupplierId=tci.SupplierId";
++		left join mas_supplier as ms on ms.SupplierId=tci.SupplierId";
++        $sql .= " where 1=1 ";
++        $sql .= " AND tci.CiDate between '".date_to_db($FromDate)."' AND '".date_to_db($ToDate)."'";
++        if($SupplierId > 0){
++        	$sql .= " AND tci.SupplierId=".(int)$SupplierId;
++        }
+         $sql .= " ORDER BY CiDate DESC ";
+         $emp_row = $db->fetch_all($sql);
+ 
+@@ -76,9 +81,15 @@
+                 $c .= '<td hidden class="text_align_right">'.sprintf("%0.3f",$row['TotalSupplierWt']).'</td>';
+                 $c .= '<td class="text_align_right">'.sprintf("%0.3f",$row['TotalMillsWt']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['CiId'].'" class="sepV_a" title="'.COTTONINWARD_Edit.'"><i class="icon-pencil"></i></a>';
+-                $c .= '<a href="'.$this->ViewPath.'&id='.$row['CiId'].'" class="sepV_a" title="'.COTTONINWARD_View.'"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.COTTONINWARD_Del.'" onclick="do_delete('.$row['CiId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['CiId'] . '" class="sepV_a" title="' . COTTONINWARD_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
++	            if($Menu->CheckViewRights($menuid)) {
++		            $c .= '<a href="' . $this->ViewPath . '&id=' . $row['CiId'] . '" class="sepV_a" title="' . COTTONINWARD_View . '"><i class="icon-eye-open"></i></a>';
++	            }
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . COTTONINWARD_Del . '" onclick="do_delete(' . $row['CiId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+@@ -363,8 +374,8 @@
+ 	public function GetCottonInwardById($id){
+         global $db;
+         $sql = 'select ci.CiId,ci.CiNo,ci.CiDate,ci.SupplierId,ci.TotalBales,ci.TotalSupplierWt,ci.TotalMillsWt,ci.SupplierLotNo,ci.MillsLotNo,su.SupplierName ,ci.cRemarks from trn_cottoninward as ci
+-left join mas_supplier as su on su.SupplierId=ci.SupplierId
+-  where CiId='.$id;
++		left join mas_supplier as su on su.SupplierId=ci.SupplierId
++	  	where CiId='.$id;
+         $result = $db->query($sql);
+         $row = $db->fetch($result);
+         return ($row) ? $row : 0;
+@@ -373,9 +384,9 @@
+     public function GetCottonInwardDetailById($id){
+         global $db;
+         $sql ='select cid.SupplierBaleNo,cid.SupplierWt,cid.MillWt,mit.ItemCode,mit.ItemName,muo.UomName from trn_cottoninwarddetail as cid
+-left join mas_item as mit on cid.ItemId=mit.ItemId
+-left join mas_uom as muo on cid.UomId=muo.UomId 
+-WHERE cid.CiId='.$id;
++		left join mas_item as mit on cid.ItemId=mit.ItemId
++		left join mas_uom as muo on cid.UomId=muo.UomId
++		WHERE cid.CiId='.$id;
+         $row = $db->fetch_all($sql);
+         return ($row) ? $row : 0;
+     }
+@@ -393,6 +404,38 @@
+                 return $this->_CiId = $id;
+         }
+     }
++	
++	public function deleteCottonInward($id){
++		global $core, $mysqli, $wojosec, $usercls;
++		//print_r($this->_CiId);
++		
++		if (empty($core->msgs)) {
++			$mysqli->startTransaction();
++			$mysqli->where("CiId=", $id);
++			$oids = $mysqli->delete("trn_cottoninwarddetail");
++			if(!$oids){
++				$mysqli->rollback();
++				$core->msgAlert('Error: '. $mysqli->getLastError());
++			}
++			
++			$mysqli->where("CiId=", $id);
++			$oids = $mysqli->delete("trn_cottoninward");
++			if(!$oids){
++				$mysqli->rollback();
++				$core->msgAlert('Error: '. $mysqli->getLastError());
++			}
++			
++			$mysqli->commit();
++			$message = "#".$id." Cottom Inward Deleted Successfully";
++			//$wojosec->writeLog($message, "", "no", "transaction");
++			$wojosec->writeLog($message, "", "no", _COTTONINWARD, 3);
++			$core->msgOkSmoke($message);
++		}
++		else{
++			$core->msgAlert("Nothing to Process");
++		}
++		//print $core->msgStatus();
++	}
+ 
+ }
+ ?>
+\ No newline at end of file
+Index: module/master/city/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/city/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/city/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $City->AddPath; ?>"><?= CITY_Add; ?></a></span><?= CITY_View; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $City->AddPath; ?>"><?= CITY_Add; ?></a></span>
++                        <?= CITY_View; ?>
++		                    <?php
++	                    }
++	                    ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -45,10 +54,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_Citylist=1',
++            data: 'get_Citylist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/master/tax/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/tax/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/tax/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Tax->AddPath; ?>"><?= strtoupper(_ADD.' '._TAX); ?></a></span><?= _VIEW.' '._TAX; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $Tax->AddPath; ?>"><?= strtoupper(_ADD.' '._TAX); ?></a></span>
++		                    <?php
++	                    }
++	                    ?>
++                        <?= _VIEW.' '._TAX; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -54,10 +63,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_taxlist=1',
++            data: 'get_taxlist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/master/supplier/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/supplier/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/supplier/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Supplier->AddPath; ?>"><?= strtoupper(_ADD.' '._SUPPLIER); ?></a></span><?= _VIEW.' '._SUPPLIER; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $Supplier->AddPath; ?>"><?= strtoupper(_ADD.' '._SUPPLIER); ?></a></span>
++		                    <?php
++	                    }
++	                    ?>
++                        <?= _VIEW.' '._SUPPLIER; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -45,10 +54,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_supplierlist=1',
++            data: 'get_supplierlist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/master/uom/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/uom/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/uom/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Uom->AddPath; ?>"><?= strtoupper(_ADD.' '._UOM); ?></a></span><?= _VIEW.' '._UOM; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $Uom->AddPath; ?>"><?= strtoupper(_ADD.' '._UOM); ?></a></span>
++		                    <?php
++	                    }
++	                    ?>
++                        <?= _VIEW.' '._UOM; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -54,10 +63,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_uomlist=1',
++            data: 'get_uomlist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/transaction/cottoninward/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/transaction/cottoninward/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/transaction/cottoninward/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -7,7 +7,7 @@
+         <div class="row-fluid marginleft0 margintop0 marginbottom0">
+             <div class="block-top-header">
+                 <div class="row-fluid">
+-                    <h1><img src="<?php echo IMG_URL; ?>/agent.png" alt="" /><?= strtoupper(_COTTONINWARD); ?></h1>
++                    <h1><img src="<?php echo GCONS_IMG_URL; ?>/agent.png" alt="" /><?= strtoupper(_COTTONINWARD); ?></h1>
+                     <div class="divider"><span></span></div>
+                 </div>
+                 <!--<div class="row-fluid">
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Cottoninward->AddPath; ?>"><?= strtoupper(_ADD.' '._COTTONINWARD); ?></a></span><?= _VIEW.' '._COTTONINWARD; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $Cottoninward->AddPath; ?>"><?= strtoupper(_ADD.' '._COTTONINWARD); ?></a></span>
++                        <?php
++	                    }
++	                    ?>
++                        <?= _VIEW.' '._COTTONINWARD; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -37,7 +46,12 @@
+                     <table class="display">
+                         <tbody>
+                         <tr>
+-                            <td></td>
++                            <td>
++                                <input class="input-small datepicker" placeholder="From Date" type="text" id="dp1" name="txt_FromDate" value="<?= date_from_db(GetCurentDate()); ?>" />
++                                <input class="input-small datepicker" placeholder="To Date" type="text" id="dp1" name="txt_ToDate" value="<?= date_from_db(GetCurentDate()); ?>" />
++		                        <?php echo $Supplier->getSupplierList(0,"cmb_s_supplier","","chzn-a");?>
++                                <button onclick="loadList()" class="btn btn-info"><i class="splashy-zoom"></i>&nbsp;FIND</button>
++                            </td>
+                         </tr>
+                         </tbody>
+                     </table>
+@@ -54,10 +68,14 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
++        var txt_FromDate = document.getElementsByName("txt_FromDate")[0].value;
++        var txt_ToDate = document.getElementsByName("txt_ToDate")[0].value;
++        var cmb_s_supplier = document.getElementsByName("cmb_s_supplier")[0].value;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_cottoninward=1',
++            data: 'get_cottoninward=1&menuid=' + menuid + "&txt_FromDate=" + txt_FromDate + "&txt_ToDate=" + txt_ToDate + "&cmb_s_supplier=" + cmb_s_supplier,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: class/class_user.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- class/class_user.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ class/class_user.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -20,6 +20,7 @@
+ 	  public $sesid;
+       public $UserTypeId;
+       public $Password;
++      public $CompanyId;
+ 	  private $LastLogin = "NOW()";
+       private $LastLoginTime = "NOW()";
+ 
+@@ -158,6 +159,7 @@
+ 				$this->UserName = $_SESSION['UserName'] = $row['UserName'];
+ 				$this->UserTypeId = $_SESSION['UserTypeId'] = $row['UserTypeId'];
+ 				$this->Password = $_SESSION['Password'] = $row['Password'];
++				$this->CompanyId = $_SESSION['CompanyId'] = $row['CompanyId'];
+ 				$data = array(
+ 					'LastLogin' => $this->LastLogin,
+ 					'LastLoginTime' => $this->LastLoginTime,
+Index: index.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- index.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ index.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -49,6 +49,7 @@
+ 	}
+ 	if(isset($_GET['proj'])) {
+ 		$core->proj=$_GET['proj'];
++		$core->menuid = $Menu->GetMenuIdByTemplateName($core->do);
+ 	}
+ 	include('header.php');
+ 	?>
+Index: module/master/itemtype/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/itemtype/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/itemtype/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,17 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Itemtype->AddPath; ?>"><?= strtoupper(_ADD.' '._ITEMTYPE); ?></a></span><?= _VIEW.' '._ITEMTYPE; ?></h2>
++                    <h2>
++                        <?php
++                        if($Menu->CheckAddRights($core->menuid)) {
++	                        ?>
++                            <span><a class="button-sml"
++                                     href="<?= $Itemtype->AddPath; ?>"><?= strtoupper(_ADD . ' ' . _ITEMTYPE); ?></a></span>
++                        <?php
++                        }
++                        ?>
++                        <?= _VIEW.' '._ITEMTYPE; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -45,10 +55,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_itemtypelist=1',
++            data: 'get_itemtypelist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/master/tax/tax.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/tax/tax.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/tax/tax.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -32,9 +32,9 @@
+     *
+     * @return
+     */
+-    public function LoadTaxGrid()
++    public function LoadTaxGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "SELECT * FROM " . $Tableinfo->mas_tax." as me";
+         $sql .= " where 1=1 AND IsActive=1 ";
+@@ -73,9 +73,13 @@
+                 $c .= '<td>'.$row['Igst'].'</td>';
+                 $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['TaxId'].'" class="sepV_a" title="'.TAX_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['TaxId'] . '" class="sepV_a" title="' . TAX_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.TAX_Del.'" onclick="do_delete('.$row['TaxId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . TAX_Del . '" onclick="do_delete(' . $row['TaxId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: module/master/country/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/country/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/country/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Country->AddPath; ?>"><?= COUNTRY_Add; ?></a></span><?= COUNTRY_View; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $Country->AddPath; ?>"><?= COUNTRY_Add; ?></a></span>
++                        <?php
++	                    }
++	                    ?>
++                        <?= COUNTRY_View; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -51,10 +60,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_countrylist=1',
++            data: 'get_countrylist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/master/itemtype/itemtype.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/itemtype/itemtype.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/itemtype/itemtype.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -1,11 +1,11 @@
+ <?php
+ /**
+- * Comments Class
++ * ItemType Class
+  *
+- * @package CMS Pro
+- * @author wojoscripts.com
+- * @copyright 2010
+- * @version $Id: class_admin.php, v2.00 2011-04-20 10:12:05 gewa Exp $
++ * @package Yathav Sri Technology
++ * @author yathavtech.in
++ * @copyright 2017
++ * @version $Id: class_itemtype.php, v2.00 2011-04-20 10:12:05 gewa Exp $
+  */
+ 
+ if (!defined("_VALID_PHP"))
+@@ -19,9 +19,8 @@
+     public $EditPath = "index.php?mod=module&proj=master&do=itemtype&action=edit";
+     public $ListingPath = "index.php?mod=module&proj=master&do=itemtype&action=listing";
+ 
+-
+     /**
+-     * Department constructor.
++     * ItemType constructor.
+      */
+     function __construct()
+     {
+@@ -29,13 +28,13 @@
+     }
+ 
+     /**
+-     * Department::getEvents()
++     * ItemType::getEvents()
+      *
+      * @return
+      */
+-    public function LoadItemtypeGrid()
++    public function LoadItemtypeGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "SELECT * FROM " . $Tableinfo->mas_itemtype . " as me";
+         $sql .= " where 1=1 AND IsActive=1 ";
+@@ -65,9 +64,12 @@
+                 $c .= '<td>'.$row['ItemType'].'</td>';
+                 $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['ItemTypeId'].'" class="sepV_a" title="'.ITEMTYPE_Edit.'"><i class="icon-pencil"></i></a>';
+-                //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.ITEMTYPE_Del.'" onclick="do_delete('.$row['ItemTypeId'].')"><i class="icon-trash"></i></a>';
++                if($Menu->CheckEditRights($menuid)) {
++	                $c .= '<a href="' . $this->EditPath . '&id=' . $row['ItemTypeId'] . '" class="sepV_a" title="' . ITEMTYPE_Edit . '"><i class="icon-pencil"></i></a>';
++                }
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="'.ITEMTYPE_Del.'" onclick="do_delete('.$row['ItemTypeId'].')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+@@ -82,7 +84,7 @@
+     }
+ 
+     /**
+-     * Skills::getSkillsList()
++     * ItemType::getItemTypeList()
+      * @param bool $sel
+      * @param bool $IdName
+      * @param bool $onchange
+@@ -154,6 +156,7 @@
+             print $core->msgStatus();
+         }
+     }
++    
+     public function getItemTypeById($id){
+         global $db;
+         $sql = 'select ItemTypeId,ItemType, IsActive from '.$this->Table.' where ItemTypeId='.$id;
+@@ -162,6 +165,7 @@
+ 
+         return ($row) ? $row : 0;
+     }
++    
+     public function CheckItemTypeName($ItemType="", $ItemTypeId=0){
+         global $db;
+ 
+@@ -183,6 +187,7 @@
+         $count = $db->numrows($sql);
+         return ($count > 0) ? 1 : 0;
+     }
++    
+     private function getItemTypeId()
+     {
+         global $core, $DEBUG;
+Index: module/master/item/item.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/item/item.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/item/item.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -32,9 +32,9 @@
+      *
+      * @return
+      */
+-    public function LoadItemGrid()
++    public function LoadItemGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "select it.ItemId,it.ItemCode,it.ItemName,ig.ItemGroup,uo3.UomName,tx.TaxName, it.IsActive, it.IsTaxable from mas_item as it
+         left join mas_itemgroup as ig on it.ItemGroupId=ig.ItemGroupId
+@@ -78,9 +78,13 @@
+ 	            $c .= '<td>'.FieldStatus($row['IsTaxable']).'</td>';
+ 	            $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['ItemId'].'" class="sepV_a" title="'.UOM_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['ItemId'] . '" class="sepV_a" title="' . UOM_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.ITEM_Del.'" onclick="do_delete('.$row['ItemId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . ITEM_Del . '" onclick="do_delete(' . $row['ItemId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: class_info.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- class_info.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ class_info.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -106,6 +106,10 @@
+ $Country = new Country();
+ 
+ //Start CottonInward  Class
++require_once(SETPATH . "/menu/menu.php");
++$Menu = new Menu();
++
++//Start Menu  Class
+ require_once(TRNPATH . "/cottoninward/cottoninward.php");
+ $Cottoninward = new CottonInward();
+ 
+Index: header_top.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- header_top.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ header_top.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -27,21 +27,27 @@
+ 				<nav>
+ 					<div class="nav-collapse">
+ 						<ul class="nav">
+-                            <li class="dropdown">
+-                                <?php
+-                                $sql = "select * from menu as m where m.parent=0 AND m.show_after_login=1 order by m.menu_order ASC"
+-                                ?>
++							<?php
++							$row_modules = $Menu->LoadModule();
++							foreach ($row_modules as $val_modules){
++								echo '<li class="dropdown">';
++								    echo '<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt icon-white"></i> '.$val_modules['ModuleName'].' <b class="caret"></b></a>';
++								    echo '<ul class="dropdown-menu">';
++								    $row_menu = $Menu->LoadMenuByModuleId($val_modules['ModuleId']);
++								    if($row_menu){
++                                        foreach ($row_menu as $val_menu){
++	                                        if($Menu->GetRightsLists($val_menu['menu_id']) > 0) {
++		                                        echo '<li><a href="index.php?mod=module&proj=' . $val_modules['ModuleTemplate'] . '&do=' . $val_menu['menu_template'] . '&action=listing">' . $val_menu['menu_name'] . '</a></li>';
++	                                        }
++                                        }
++								    }
++								    echo '</ul>';
++                                echo '</li>';
++							}
++							?>
++                            <!--<li class="dropdown">
+                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt icon-white"></i> Master <b class="caret"></b></a>
+                                 <ul class="dropdown-menu">
+-                                    <!--
+-                                    <li><a href="index.php?mod=module&proj=master&do=employee&action=listing">Employees</a></li>
+-                                    <li><a href="index.php?mod=module&proj=master&do=department&action=listing">Department</a></li>
+-                                    <li><a href="index.php?mod=module&proj=master&do=designation&action=listing">Designation</a></li>
+-                                    <li><a href="index.php?mod=module&proj=master&do=location&action=listing">Location</a></li>
+-                                    <li><a href="index.php?mod=module&proj=master&do=skills&action=listing">Skills</a></li>
+-                                    <li><a href="index.php?mod=module&proj=master&do=gender&action=listing">Gender</a></li>
+-                                    <li><a href="index.php?mod=module&proj=master&do=shift&action=listing">Shift</a></li>
+-                                    -->
+                                     <li><a href="index.php?mod=module&proj=master&do=itemtype&action=listing">ItemType</a></li>
+                                     <li><a href="index.php?mod=module&proj=master&do=itemgroup&action=listing">ItemGroup</a></li>
+                                     <li><a href="index.php?mod=module&proj=master&do=item&action=listing">Item</a></li>
+@@ -65,74 +71,7 @@
+                                 <ul class="dropdown-menu">
+                                     <li><a href="index.php?mod=module&proj=settings&do=generalsettings&action=listing">General Settings </a></li>
+                                 </ul>
+-                            </li>
+-							<!--<li class="dropdown">
+-								<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt icon-white"></i> Forms <b class="caret"></b></a>
+-								<ul class="dropdown-menu">
+-									<li><a href="form_elements.html">Form elements</a></li>
+-									<li><a href="form_extended.html">Extended form elements</a></li>
+-									<li><a href="form_validation.html">Form Validation</a></li>
+-								</ul>
+-							</li>
+-							<li class="dropdown">
+-								<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-th icon-white"></i> Components <b class="caret"></b></a>
+-								<ul class="dropdown-menu">
+-									<li><a href="alerts_btns.html">Alerts & Buttons</a></li>
+-									<li><a href="icons.html">Icons</a></li>
+-									<li><a href="notifications.html">Notifications</a></li>
+-									<li><a href="tables.html">Tables</a></li>
+-									<li><a href="tables_more.html">Tables (more examples)</a></li>
+-									<li><a href="tabs_accordion.html">Tabs & Accordion</a></li>
+-									<li><a href="tooltips.html">Tooltips, Popovers</a></li>
+-									<li><a href="typography.html">Typography</a></li>
+-									<li><a href="widgets.html">Widget boxes</a></li>
+-									<li class="dropdown">
+-										<a href="#">Sub menu <b class="caret-right"></b></a>
+-										<ul class="dropdown-menu">
+-											<li><a href="#">Sub menu 1.1</a></li>
+-											<li><a href="#">Sub menu 1.2</a></li>
+-											<li><a href="#">Sub menu 1.3</a></li>
+-											<li>
+-												<a href="#">Sub menu 1.4 <b class="caret-right"></b></a>
+-												<ul class="dropdown-menu">
+-													<li><a href="#">Sub menu 1.4.1</a></li>
+-													<li><a href="#">Sub menu 1.4.2</a></li>
+-													<li><a href="#">Sub menu 1.4.3</a></li>
+-												</ul>
+-											</li>
+-										</ul>
+-									</li>
+-								</ul>
+-							</li>
+-							<li class="dropdown">
+-								<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-wrench icon-white"></i> Plugins <b class="caret"></b></a>
+-								<ul class="dropdown-menu">
+-									<li><a href="charts.html">Charts</a></li>
+-									<li><a href="calendar.html">Calendar</a></li>
+-									<li><a href="datatable.html">Datatable</a></li>
+-									<li><a href="file_manager.html">File Manager</a></li>
+-									<li><a href="floating_header.html">Floating List Header</a></li>
+-									<li><a href="google_maps.html">Google Maps</a></li>
+-									<li><a href="gallery.html">Gallery Grid</a></li>
+-									<li><a href="wizard.html">Wizard</a></li>
+-								</ul>
+-							</li>
+-							<li class="dropdown">
+-								<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-file icon-white"></i> Pages <b class="caret"></b></a>
+-								<ul class="dropdown-menu">
+-									<li><a href="chat.html">Chat</a></li>
+-									<li><a href="error_404.html">Error 404</a></li>
+-									<li><a href="mailbox.html">Mailbox</a></li>
+-									<li><a href="search_page.html">Search page</a></li>
+-									<li><a href="user_profile.html">User profile</a></li>
+-									<li><a href="user_static.html">User profile (static)</a></li>
+-								</ul>
+-							</li>
+-							<li>
+-							</li>
+-							<li>
+-								<a href="documentation.html"><i class="icon-book icon-white"></i> Help</a>
+-							</li>-->
++                            </li>-->
+ 						</ul>
+ 					</div>
+ 				</nav>
+Index: module/master/supplier/supplier.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/supplier/supplier.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/supplier/supplier.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -32,9 +32,9 @@
+      *
+      * @return
+      */
+-    public function LoadSupplierGrid()
++    public function LoadSupplierGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "select sup.SupplierId,sup.SupplierName,sup.PhoneNo,sup.GSTId,sup.IsActive,ct.CityName from mas_supplier as sup
+ left join mas_city as ct on sup.CityId=ct.CityId";
+@@ -72,9 +72,13 @@
+                 $c .= '<td>'.$row['GSTId'].'</td>';
+                 $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['SupplierId'].'" class="sepV_a" title="'.SUPPLIER_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['SupplierId'] . '" class="sepV_a" title="' . SUPPLIER_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.SUPPLIER_Del.'" onclick="do_delete('.$row['SupplierId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . SUPPLIER_Del . '" onclick="do_delete(' . $row['SupplierId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: module/master/country/country.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/country/country.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/country/country.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -30,9 +30,9 @@
+      *
+      * @return
+      */
+-    public function LoadCountryGrid()
++    public function LoadCountryGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "SELECT * FROM " . $Tableinfo->mas_country." as me";
+         $sql .= " where 1=1 AND IsActive=1 ";
+@@ -63,9 +63,13 @@
+                 $c .= '<td>'.$row['CountryName'].'</td>';
+ 	            $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['CountryId'].'" class="sepV_a" title="'.COUNTRY_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['CountryId'] . '" class="sepV_a" title="' . COUNTRY_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.COUNTRY_Del.'" onclick="do_delete('.$row['CountryId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . COUNTRY_Del . '" onclick="do_delete(' . $row['CountryId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: module/master/state/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/state/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/state/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $State->AddPath; ?>"><?= STATE_Add; ?></a></span><?= STATE_View; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $State->AddPath; ?>"><?= STATE_Add; ?></a></span>
++		                    <?php
++	                    }
++	                    ?>
++                        <?= STATE_View; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -45,10 +54,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_statelist=1',
++            data: 'get_statelist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/master/itemgroup/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/itemgroup/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/itemgroup/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -31,7 +31,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Itemgroup->AddPath; ?>"><?= strtoupper(_ADD.' '._ITEMGROUP); ?></a></span><?= _VIEW.' '._ITEMGROUP; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                        ?>
++                        <span><a class="button-sml" href="<?= $Itemgroup->AddPath; ?>"><?= strtoupper(_ADD.' '._ITEMGROUP); ?></a></span>
++                        <?php
++	                    }
++	                    ?>
++                        <?= _VIEW.' '._ITEMGROUP; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -47,10 +56,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_itemgrouplist=1',
++            data: 'get_itemgrouplist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: config.ini.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- config.ini.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ config.ini.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -15,9 +15,15 @@
+ 	* Database Constants - these constants refer to 
+ 	* the database configuration settings. 
+ 	*/
+-	 define('DB_SERVER', '192.168.1.5');
++	 /*define('DB_SERVER', '192.168.1.5');
+ 	 define('DB_USER', 'yathav');
+ 	 define('DB_PASS', 'King@7499!');
++	 define('DB_DATABASE', 'jegan_spinning_erp');
++	 define('DB_PORT', 3306);*/
++
++	define('DB_SERVER', 'localhost');
++	 define('DB_USER', 'root');
++	 define('DB_PASS', 'king74991');
+ 	 define('DB_DATABASE', 'jegan_spinning_erp');
+ 	 define('DB_PORT', 3306);
+  
+@@ -26,4 +32,4 @@
+ 	* Not recomended for live site. true/false 
+ 	*/
+ 	$DEBUG = true; 
+-?>
+\ No newline at end of file
++?>
+Index: class/class_core.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- class/class_core.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ class/class_core.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -24,6 +24,7 @@
+ 	  public $mod = null;
+ 	  public $mmod = null;
+ 	  public $proj = null;
++	  public $menuid = null;
+       public $year = null;
+       public $month = null;
+       public $day = null;
+@@ -1350,6 +1351,7 @@
+                   return $this->mod = $mod;
+           }
+       }
++	  
+       /**
+        * Core::getmMod()
+        *
+Index: module/master/uom/uom.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/uom/uom.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/uom/uom.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -32,13 +32,13 @@
+     *
+     * @return
+     */
+-    public function LoadUomGrid()
++    public function LoadUomGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "select uo.UomId,uo.UomName,uo.DecimalPlace,uo1.UomName as pUom,uo.pValue, uo2.UomName as sUom,uo.sValue,uo.IsActive from mas_uom as uo
+-left join mas_uom as uo1 on uo.pUomId=uo1.UomId
+-left join mas_uom as uo2 on uo.sUomId=uo2.UomId";
++		left join mas_uom as uo1 on uo.pUomId=uo1.UomId
++		left join mas_uom as uo2 on uo.sUomId=uo2.UomId";
+         $sql .= " where 1=1 AND uo.IsActive=1 ";
+         $sql .= " ORDER BY uo.UomName ASC ";
+         $emp_row = $db->fetch_all($sql);
+@@ -76,9 +76,13 @@
+                 $c .= '<td>'.$row['sUom'].'</td>';
+                 $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['UomId'].'" class="sepV_a" title="'.ITEM_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['UomId'] . '" class="sepV_a" title="' . ITEM_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.UOM_Del.'" onclick="do_delete('.$row['UomId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . UOM_Del . '" onclick="do_delete(' . $row['UomId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: module/master/tallyledger/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/tallyledger/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/tallyledger/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -31,7 +31,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="<?= $Tallyledger->AddPath; ?>"><?= strtoupper(_ADD.' '._TALLYLEDGER); ?></a></span><?= _VIEW.' '._TALLYLEDGER; ?></h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="<?= $Tallyledger->AddPath; ?>"><?= strtoupper(_ADD.' '._TALLYLEDGER); ?></a></span>
++                        <?php
++	                    }
++	                    ?>
++                        <?= _VIEW.' '._TALLYLEDGER; ?>
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -47,10 +56,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_tallyledgerlist=1',
++            data: 'get_tallyledgerlist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: ajax.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ajax.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ ajax.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -25,10 +25,10 @@
+ ?>
+ <?php
+ /* Add Department */
+-if (isset($_POST['add_department'])){
++/*if (isset($_POST['add_department'])){
+     $id = $_POST['id'];
+     echo $Department->add_department($id);
+-}
++}*/
+ ?>
+ <?php
+ /* Get Designation List */
+@@ -57,19 +57,20 @@
+ <?php
+ /* Get Item List */
+ if (isset($_POST['get_itemlist'])){
+-    echo $Item->LoadItemGrid();
++    echo $Item->LoadItemGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Item Group List */
+ if (isset($_POST['get_itemgrouplist'])){
+-    echo $Itemgroup->LoadItemGroupGrid();
++    echo $Itemgroup->LoadItemGroupGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Item Type List */
+ if (isset($_POST['get_itemtypelist'])){
+-    echo $Itemtype->LoadItemtypeGrid();
++	
++    echo $Itemtype->LoadItemtypeGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+@@ -81,49 +82,49 @@
+ <?php
+ /* Get State List */
+ if (isset($_POST['get_statelist'])){
+-    echo $State->LoadStateGrid();
++    echo $State->LoadStateGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Supplier List */
+ if (isset($_POST['get_supplierlist'])){
+-    echo $Supplier->LoadSupplierGrid();
++    echo $Supplier->LoadSupplierGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Country List */
+ if (isset($_POST['get_countrylist'])){
+-    echo $Country->LoadCountryGrid();
++    echo $Country->LoadCountryGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Cotton Inward List */
+ if (isset($_POST['get_cottoninward'])){
+-    echo $Cottoninward->LoadCottonInwardGrid();
++    echo $Cottoninward->LoadCottonInwardGrid($_POST['menuid'], $_POST['txt_FromDate'], $_POST['txt_ToDate'], $_POST['cmb_s_supplier']);
+ }
+ ?>
+ <?php
+ /* Get Tax List */
+ if (isset($_POST['get_taxlist'])){
+-    echo $Tax->LoadTaxGrid();
++    echo $Tax->LoadTaxGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Uom List */
+ if (isset($_POST['get_uomlist'])){
+-    echo $Uom->LoadUomGrid();
++    echo $Uom->LoadUomGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get Tally Ledger List */
+ if (isset($_POST['get_tallyledgerlist'])){
+-    echo $Tallyledger->LoadTallyLedgerGrid();
++    echo $Tallyledger->LoadTallyLedgerGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+ /* Get City List */
+ if (isset($_POST['get_Citylist'])){
+-	echo $City->LoadCityGrid();
++	echo $City->LoadCityGrid($_POST['menuid']);
+ }
+ ?>
+ <?php
+@@ -217,7 +218,7 @@
+ }
+ ?>
+ <?php
+-/* Delete City */
++/* Delete Supplier */
+ if (isset($_POST['deleteSupplier'])){
+     if (intval($_POST['deleteSupplier']) == 0 || empty($_POST['deleteSupplier'])){}
+     $id_supplier = intval($_POST['id']);
+@@ -227,13 +228,21 @@
+ }
+ ?>
+ <?php
+-/* Delete City */
++/* Delete Tally Ledger */
+ if (isset($_POST['deleteTallyledger'])){
+     if (intval($_POST['deleteTallyledger']) == 0 || empty($_POST['deleteTallyledger'])){}
+     $id_tallyledger = intval($_POST['id']);
+     $action_tallyledger = $db->delete($Tableinfo->mas_tallyledger, "TallyLedgerId=".$id_tallyledger);
+     $title = "#".$id_tallyledger." "._TALLYLEDGER." - "._DELETED."...! ";
+-    print ($action_tallyledger) ? $wojosec->writeLog($title, "", "no", _TALLYLEDGER
+-            , 3).$core->msgOk(' <strong>'.$title.'</strong>') : $core->msgAlert(_SYSTEM_PROCCESS);
++    print ($action_tallyledger) ? $wojosec->writeLog($title, "", "no", _TALLYLEDGER, 3).$core->msgOk(' <strong>'.$title.'</strong>') : $core->msgAlert(_SYSTEM_PROCCESS);
++}
++?>
++
++<?php
++/* Delete Cotton Inward */
++if (isset($_POST['deleteCottonInward'])){
++	if (intval($_POST['deleteCottonInward']) == 0 || empty($_POST['deleteCottonInward'])){}
++	$id_cid = intval($_POST['id']);
++	echo $Cottoninward->deleteCottonInward($id_cid);
+ }
+ ?>
+Index: module/master/itemgroup/itemgroup.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/itemgroup/itemgroup.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/itemgroup/itemgroup.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -32,9 +32,9 @@
+      *
+      * @return
+      */
+-    public function LoadItemGroupGrid()
++    public function LoadItemGroupGrid($menuid)
+     {
+-        global $db, $core, $Tableinfo;
++        global $db, $core, $Tableinfo, $Menu;
+         $c = '';
+         $sql = "SELECT me.ItemGroupId, mit.ItemType, me.ItemGroup, me.HsnCode, mt.TaxName, me.IsActive FROM " . $Tableinfo->mas_itemgroup." as me";
+         $sql .= " left join mas_itemtype as mit on mit.ItemTypeId=me.ItemTypeId ";
+@@ -72,9 +72,13 @@
+                 $c .= '<td>'.$row['TaxName'].'</td>';
+                 $c .= '<td>'.FieldStatus($row['IsActive']).'</td>';
+                 $c .= '<td>';
+-                $c .= '<a href="'.$this->EditPath.'&id='.$row['ItemGroupId'].'" class="sepV_a" title="'.ITEMGROUP_Edit.'"><i class="icon-pencil"></i></a>';
++	            if($Menu->CheckEditRights($menuid)) {
++		            $c .= '<a href="' . $this->EditPath . '&id=' . $row['ItemGroupId'] . '" class="sepV_a" title="' . ITEMGROUP_Edit . '"><i class="icon-pencil"></i></a>';
++	            }
+                 //$c .= '<a href="#" class="sepV_a" title="View"><i class="icon-eye-open"></i></a>';
+-                $c .= '<a href="javascript:void(0);" title="'.DEPT_Del.'" onclick="do_delete('.$row['ItemGroupId'].')"><i class="icon-trash"></i></a>';
++	            if($Menu->CheckDeleteRights($menuid)) {
++		            $c .= '<a href="javascript:void(0);" title="' . DEPT_Del . '" onclick="do_delete(' . $row['ItemGroupId'] . ')"><i class="icon-trash"></i></a>';
++	            }
+                 $c .= '</td>';
+                 $c .= '</tr>';
+             }
+Index: class/class_tableinfo.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- class/class_tableinfo.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ class/class_tableinfo.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -13,6 +13,7 @@
+ 
+ class Tableinfo
+ {
++	//Masters
+ 	public $mas_employee = "mas_employee";
+ 	public $mas_employeecategory = "mas_employeecategory";
+ 	public $mas_department = "mas_department";
+@@ -31,5 +32,11 @@
+ 	public $mas_tax= "mas_tax";
+ 	public $mas_uom= "mas_uom";
+ 	public $mas_tallyledger= "mas_tallyledger";
++	
++	//Settings
++	public $_menu= "menu";
++	public $_modules= "modules";
++	
++	//Transaction
+ }
+ ?>
+\ No newline at end of file
+Index: module/master/item/listing.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/master/item/listing.php	(revision 21:d5051d18f96f3753365670a8ee393903fdf5e5e2)
++++ module/master/item/listing.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -29,7 +29,16 @@
+         <div class="row-fluid  marginleft0 margintop0 marginbottom0">
+             <div class="block-border">
+                 <div class="block-header">
+-                    <h2><span><a class="button-sml" href="index.php?mod=module&proj=master&do=item&action=add">Add New Item</a></span>Viewing Item</h2>
++                    <h2>
++	                    <?php
++	                    if($Menu->CheckAddRights($core->menuid)) {
++	                    ?>
++                        <span><a class="button-sml" href="index.php?mod=module&proj=master&do=item&action=add">Add New Item</a></span>
++                        <?php
++	                    }
++	                    ?>
++                        Viewing Item
++                    </h2>
+                 </div>
+             </div>
+             <div class="block-content">
+@@ -62,10 +71,11 @@
+     });
+ 
+     function loadList() {
++        var menuid = <?php echo $core->menuid; ?>;
+         $.ajax({
+             type: 'post',
+             url: "ajax.php",
+-            data: 'get_itemlist=1',
++            data: 'get_itemlist=1&menuid=' + menuid,
+             cache: false,
+             success: function (html) {
+                 $("div.sortable").html(html);
+Index: module/settings/menu/menu.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- module/settings/menu/menu.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
++++ module/settings/menu/menu.php	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -0,0 +1,198 @@
++<?php
++/**
++ * Menu Class
++ *
++ * @package Yathav Sri Technology
++ * @author yathavtech.in
++ * @copyright 2017
++ * @version $Id: class_menu.php, v2.00 2011-04-20 10:12:05 gewa Exp $
++ */
++
++if (!defined("_VALID_PHP"))
++    die('Direct access to this location is not allowed.');
++
++class Menu
++{
++    public $_menu_id = 0;
++    //public $AddPath = "index.php?mod=module&proj=transaction&do=cottoninward&action=add";
++    //public $EditPath = "index.php?mod=module&proj=transaction&do=cottoninward&action=edit";
++    //public $ViewPath= "index.php?mod=module&proj=transaction&do=cottoninward&action=view";
++    //public $ListingPath = "index.php?mod=module&proj=transaction&do=cottoninward&action=listing";
++    
++    /**
++     * CottonInward constructor.
++     */
++    function __construct()
++    {
++    
++    }
++	
++	public function LoadModule(){
++    	global $db;
++    	$sql = "select mo.ModuleId, mo.ModuleName, mo.ModuleTitle, mo.ModuleImage, mo.ModuleTemplate from modules as mo where mo.ModuleStatus='1' AND mo.IsTop='1' order by mo.ModuleOrder ASC;";
++	    $row = $db->fetch_all($sql);
++	    return ($row) ? $row : 0;
++    }
++	
++	public function LoadMenuByModuleId($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_title, mm.menu_image, mm.menu_template from menu as mm
++		where mm.menu_status='1' AND mm.IsTop='1' AND mm.parent=0 AND mm.ModuleId=".$id."
++		order by mm.menu_order asc";
++		//echo $sql;
++		$row = $db->fetch_all($sql);
++		return ($row) ? $row : 0;
++	}
++	
++	public function GetRightsLists($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$sql = $db->query($sql);
++		$count = $db->numrows($sql);
++		return ($count > 0) ? 1 : 0;
++	}
++	
++	public function GetMenuIdByTemplateName($name){
++		global $db;
++		$sql = "select mm.menu_id from menu as mm where mm.menu_template='".$name."'";
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		$id = $row['menu_id'];
++		
++		return $id;
++		//echo $id;
++	}
++	
++	public function CheckListingRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsListing='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckAddRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsAdd='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckEditRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsEdit='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckDeleteRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsDelete='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckViewRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsView='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckPrintRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsPrint='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckApproveRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsApprove='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckUnApproveRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsUnApprove='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckEmailRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsEmail='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckSmsRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsSMS='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckExportExcelRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsExportExcel='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckExportPdfRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsExportPDF='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++	
++	public function CheckImportRights($id){
++		global $db;
++		$sql = "select mm.menu_id, mm.ModuleId, mm.menu_name, mm.menu_template from menu as mm where mm.IsImport='1' AND mm.menu_status='1' AND mm.parent=".$id;
++		//echo $sql;
++		$result = $db->query($sql);
++		$row = $db->fetch($result);
++		
++		return ($row) ? $row : 0;
++	}
++}
++?>
+\ No newline at end of file
+Index: patches/2.sql
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- patches/2.sql	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
++++ patches/2.sql	(revision 22:21dc38bff3dbdbac2c23dfd96db2a7e2c6a4e4e3)
+@@ -0,0 +1,42 @@
++CREATE TABLE IF NOT EXISTS `modules` (
++  `ModuleId` INT(5) NOT NULL AUTO_INCREMENT,
++  `ModuleName` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
++  `ModuleTitle` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
++  `ModuleImage` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
++  `ModuleOrder` INT(5) NOT NULL DEFAULT '0',
++  `ModuleStatus` ENUM('0','1') NULL DEFAULT '1' COLLATE 'utf8_unicode_ci',
++  `IsTop` ENUM('0','1') NOT NULL DEFAULT '1' COLLATE 'utf8_unicode_ci',
++  `IsSideMenu` ENUM('0','1') NOT NULL DEFAULT '1' COLLATE 'utf8_unicode_ci',
++  `IsFooter` ENUM('0','1') NOT NULL DEFAULT '1' COLLATE 'utf8_unicode_ci',
++  PRIMARY KEY (`ModuleId`)
++)
++  COLLATE='utf8_unicode_ci'
++  ENGINE=InnoDB;
++
++
++INSERT INTO `modules` (`ModuleId`, `ModuleName`, `ModuleTitle`, `ModuleImage`, `ModuleOrder`, `ModuleStatus`, `IsTop`, `IsSideMenu`, `IsFooter`) VALUES (1, 'Master', 'Master', NULL, 1, '1', '1', '0', '0');
++INSERT INTO `modules` (`ModuleId`, `ModuleName`, `ModuleTitle`, `ModuleImage`, `ModuleOrder`, `ModuleStatus`, `IsTop`, `IsSideMenu`, `IsFooter`) VALUES (2, 'Transaction', 'Transaction', NULL, 2, '1', '1', '0', '0');
++INSERT INTO `modules` (`ModuleId`, `ModuleName`, `ModuleTitle`, `ModuleImage`, `ModuleOrder`, `ModuleStatus`, `IsTop`, `IsSideMenu`, `IsFooter`) VALUES (3, 'Settings', 'Settings', NULL, 3, '1', '1', '0', '0');
++
++LOCK TABLES `menu` WRITE;
++ALTER TABLE `menu`
++  CHANGE COLUMN `group_id` `ModuleId` INT NOT NULL DEFAULT '0' AFTER `menu_id`;
++ALTER TABLE `menu`
++  ADD COLUMN `IsListing` INT(1) NOT NULL DEFAULT '0' AFTER `IsFooter`,
++  ADD COLUMN `IsAdd` INT(1) NOT NULL DEFAULT '0' AFTER `IsListing`,
++  ADD COLUMN `IsEdit` INT(1) NOT NULL DEFAULT '0' AFTER `IsAdd`,
++  ADD COLUMN `IsDelete` INT(1) NOT NULL DEFAULT '0' AFTER `IsEdit`,
++  ADD COLUMN `IsView` INT(1) NOT NULL DEFAULT '0' AFTER `IsDelete`,
++  ADD COLUMN `IsPrint` INT(1) NOT NULL DEFAULT '0' AFTER `IsView`,
++  ADD COLUMN `IsApprove` INT(1) NOT NULL DEFAULT '0' AFTER `IsPrint`,
++  ADD COLUMN `IsUnApprove` INT(1) NOT NULL DEFAULT '0' AFTER `IsApprove`,
++  ADD COLUMN `IsEmail` INT(1) NOT NULL DEFAULT '0' AFTER `IsUnApprove`,
++  ADD COLUMN `IsSMS` INT(1) NOT NULL DEFAULT '0' AFTER `IsEmail`,
++  ADD COLUMN `IsExportExcel` INT(1) NOT NULL DEFAULT '0' AFTER `IsSMS`,
++  ADD COLUMN `IsExportPDF` INT(1) NOT NULL DEFAULT '0' AFTER `IsExportExcel`;
++UNLOCK TABLES;
++
++LOCK TABLES `modules` WRITE;
++ALTER TABLE `modules`
++  ADD COLUMN `ModuleTemplate` VARCHAR(255) NULL DEFAULT NULL AFTER `ModuleImage`;
++UNLOCK TABLES;
+\ No newline at end of file

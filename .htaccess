@@ -1,0 +1,12 @@
+#Options -Multiviews
+#RewriteEngine on
+ 
+#RewriteCond %{THE_REQUEST} \s/+index\.php\?mod=([^\s&]+)&proj=([^\s&]+)&do=([^\s&]+)&action=([^\s&]+) [NC]
+#RewriteRule ^ /%1/%2/%3/%4? [R=302,L]
+
+#RewriteCond %{REQUEST_FILENAME} -d [OR]
+#RewriteCond %{REQUEST_FILENAME} -f [OR]
+#RewriteCond %{REQUEST_FILENAME} -l
+#RewriteRule ^ - [L]
+
+#RewriteRule ^([^/]+)/([^/]+)/?$ index.php?mod=$1&proj=$2&do=$3&action=$4 [L,QSA]

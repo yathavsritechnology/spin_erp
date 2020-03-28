@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /rd/gst/setup/
+	RewriteRule ^modrewrite.test*$ modrewrite.php [L]
+</IfModule>
