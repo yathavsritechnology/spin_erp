@@ -78,8 +78,9 @@
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Description of Goods</td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">HSN/SAC</td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Quantity</td>
+                            <td style="border-right:1px solid #000;padding:2px;text-align:center;">UOM</td>
+							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Bag / Cones</td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Rate</td>
-							<td style="border-right:1px solid #000;padding:2px;text-align:center;">UOM</td>
 							<td style="text-align:center;">Amount</td>
 						</tr>
 						</thead>
@@ -93,9 +94,10 @@
 							<td style="border-right:1px solid #000;padding:2px;"><?= $n ?></td>
 							<td style="border-right:1px solid #000;padding:2px;"><b><?= $ItemName ?></b></td>
 							<td style="border-right:1px solid #000;padding:2px;"><?= $rHsnCode ?></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rQty ?></b></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $sQty ?></b></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><?= $rUomName; ?></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rQty ?></b><br /><span style="font-size:10px;">(<?= $sUomName ?>)</span></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rRate ?></b></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><?= $rUomName; ?></td>
 							<td style="text-align:right;padding:2px;"><b><?= $rTotal ?></b></td>
 						</tr>
                         <?php
@@ -103,6 +105,7 @@
                         ?>
 						<tr style="border-bottom:0px solid #000;height:25px;">
 							<td style="border-right:1px solid #000;padding:2px;">&nbsp;</td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
@@ -116,21 +119,45 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:5px 2px 5px 2px;border-top:1px solid #000;border-bottom:1px solid #000;"><b><?= $this->_Total; ?></b></td>
 						</tr>
+                        <?php
+						if($this->IsCessTaxCalc == 1){
+                        ?>
+                        <tr style="border-bottom:0px solid #000;height:15px;">
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>CESS@ <?= $this->CessPer ?></b></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;padding:2px;"><b><?= $this->CessTotal; ?></b></td>
+                        </tr>
+                        <?php
+						}
+						if($this->tSgstValue > 0){
+						?>
 						<tr style="height:15px;">
 							<td style="border-right:1px solid #000;">&nbsp;</td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>SGST</b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;"><b><?= $this->tSgstValue; ?></b></td>
 						</tr>
+                        <?php
+                        }
+                        if($this->tCgstValue > 0){
+                        ?>
 						<tr style="border-bottom:0px solid #000;height:15px;">
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>CGST</b></td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
@@ -138,6 +165,35 @@
 							<td style="text-align:right;padding:2px;"><b><?= $this->tCgstValue; ?></b></td>
 						</tr>
 						<?php
+						}
+						if($this->tIgstValue > 0){
+						?>
+                        <tr style="border-bottom:0px solid #000;height:15px;">
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>IGST</b></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;padding:2px;"><b><?= $this->tIgstValue; ?></b></td>
+                        </tr>
+                        <?php
+                        }
+                        if($this->IsTcsCalc == 1){
+                        ?>
+                        <tr style="border-bottom:0px solid #000;height:15px;">
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>TSC@ <?= $this->TcsPer ?></b></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;padding:2px;"><b><?= $this->TcsTotal; ?></b></td>
+                        </tr>
+                        <?php
+                        }
 						if($this->RoundOff != 0){
 						?>
 						<tr style="border-bottom:0px solid #000;height:15px;">
@@ -145,6 +201,7 @@
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>Round Off</b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;"><b><?= $this->RoundOff; ?></b></td>
@@ -162,6 +219,7 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td></td>
 						</tr>
 						<?php
@@ -173,8 +231,9 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:right;"><b>Total</b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->TotalQty); ?></b></td>
-							<td style="text-align:right;padding:2px;border-right:1px solid #000;"></td>
+							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_sTotalQty); ?></b></td>
+                            <td style="text-align:right;padding:2px;border-right:1px solid #000;"></td>
+							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_TotalQty); ?></b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;font-weight:bold;"><?= $this->GrandTotal; ?></td>
 						</tr>
@@ -201,19 +260,39 @@
 						<tr>
 							<td style="border-right:1px solid #000;text-align: center;padding:2px;">HSN/SAC</td>
 							<td style="border-right:1px solid #000;text-align: center;padding:2px;">Taxable Value</td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
 							<td style="border-right:1px solid #000;text-align: center;padding:2px;" colspan="2">CGST</td>
 							<td style="border-right:0px solid #000;text-align: center;padding:2px;" colspan="2">SGST</td>
-							<!--<td colspan="2">IGST</td>-->
+                            <?php
+                            }
+                            else{
+                            ?>
+							<td colspan="2">IGST</td>
+                            <?php
+                            }
+                            ?>
 						</tr>
 						<tr style="border-bottom:1px solid #000;">
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Rate</td>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Amount</td>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Rate</td>
 							<td style="border-right:0px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Amount</td>
-							<!--<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;">Rate</td>
-							<td style="border-top:1px solid #000;text-align: center;">Amount</td>-->
+                            <?php
+                            }
+                            else{
+                            ?>
+							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;">Rate</td>
+							<td style="border-top:1px solid #000;text-align: center;">Amount</td>
+                            <?php
+                            }
+                            ?>
 						</tr>
 						<?php
 						foreach($this->data_tax as $row_tax){
@@ -222,12 +301,22 @@
 						<tr style="border-bottom:1px solid #000;">
 							<td style="border-right:1px solid #000;padding:2px;"><?= $tHsnCode ?></td>
 							<td style="border-right:1px solid #000;text-align:right;padding:2px;"><?= $tTaxableValue ?></td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tCgstPer ?>%</td>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tCgstValue ?></td>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tSgstPer ?>%</td>
 							<td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tSgstValue ?></td>
-							<!--<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;">Rate</td>
-							<td style="border-top:1px solid #000;text-align: right;">Amount</td>-->
+                            <?php
+                            }
+                            else{
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tIgstPer ?>%</td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tIgstValue ?></td>
+                            <?php
+                            }
+                            ?>
 						</tr>
 						<?php
 						}
@@ -235,12 +324,22 @@
 						<tr>
 							<td style="border-right:1px solid #000;text-align:right;font-weight:bold;padding:2px;">Total</td>
 							<td style="border-right:1px solid #000;text-align:right;font-weight:bold;padding:2px;"><?= $this->TaxValueAmt; ?></td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->CgstAmt; ?></td>
 							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
 							<td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->SgstAmt; ?></td>
-							<!--<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;">Rate</td>
-							<td style="border-top:1px solid #000;text-align: right;">Amount</td>-->
+                            <?php
+                            }
+                            else{
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->IgstAmt; ?></td>
+                            <?php
+                            }
+                            ?>
 						</tr>
 					</table>
 				</td>
