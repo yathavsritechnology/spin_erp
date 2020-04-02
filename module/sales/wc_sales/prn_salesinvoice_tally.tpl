@@ -101,9 +101,9 @@
 							<td style="border-right:1px solid #000;padding:2px;"><?= $n ?></td>
 							<td style="border-right:1px solid #000;padding:2px;"><b><?= $ItemName ?></b></td>
 							<td style="border-right:1px solid #000;padding:2px;"><?= $rHsnCode ?></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $sQty ?></b></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rQty ?></b></td>
                             <td style="text-align:right;border-right:1px solid #000;padding:2px;"><?= $rUomName; ?></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rQty ?></b><br /><span style="font-size:10px;">(<?= $sUomName ?>)</span></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $sQty ?></b><br /><span style="font-size:10px;">(<?= $sUomName ?>)</span></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rRate ?></b></td>
 							<td style="text-align:right;padding:2px;"><b><?= $rTotal ?></b></td>
 						</tr>
@@ -228,7 +228,7 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="padding:2px;"></td>
 							<td></td>
 						</tr>
 						<?php
@@ -240,9 +240,9 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:right;"><b>Total</b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_sTotalQty); ?></b></td>
-                            <td style="text-align:right;padding:2px;border-right:1px solid #000;"></td>
 							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_TotalQty); ?></b></td>
+                            <td style="text-align:right;padding:2px;border-right:1px solid #000;"></td>
+							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_sTotalQty); ?></b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;font-weight:bold;"><?= $this->GrandTotal; ?></td>
 						</tr>

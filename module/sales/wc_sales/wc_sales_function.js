@@ -131,9 +131,9 @@ function WasteCottonSalesSgstCalc(){
             + '<input readonly onfocus="this.select();" onkeypress="return numbersonly(event)" onchange="calc_lineItem(' + n + ')" class="txt_100 prodqty text_align_right" type="text" name="txt_prodqty[' + n + ']" id="txt_prodqty' + n + '" value="' + parseFloat(sprodcqty).toFixed(3) + '" />'
             + '</td>'
             + '<td class="text_align_right td_nowrap"><input class="txt_100 text_align_right prodvalue" type="text" name="prodvalue[' + n + ']" id="prodvalue' + n + '" value="' + sprodvalue + '" readonly="true" /></td>'
-            + '<td nowrap class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Sgst' + n + '">' + txt_item_Sgst + ' %</span></span><br /><span id="span_SgstValue' + n + '">' + parseFloat(SgstValue).toFixed(2) + '</td>'
-            + '<td nowrap class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Cgst' + n + '">' + txt_item_Cgst + ' %</span></span><br /><span id="span_CgstValue' + n + '">' + parseFloat(CgstValue).toFixed(2) + '</td>'
-            + '<td nowrap class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Igst' + n + '">' + txt_item_Igst + ' %</span></span><br /><span id="span_IgstValue' + n + '">' + parseFloat(IgstValue).toFixed(2) + '</td>'
+            + '<td hidden nowrap class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Sgst' + n + '">' + txt_item_Sgst + ' %</span></span><br /><span id="span_SgstValue' + n + '">' + parseFloat(SgstValue).toFixed(2) + '</td>'
+            + '<td hidden nowrap class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Cgst' + n + '">' + txt_item_Cgst + ' %</span></span><br /><span id="span_CgstValue' + n + '">' + parseFloat(CgstValue).toFixed(2) + '</td>'
+            + '<td hidden nowrap class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Igst' + n + '">' + txt_item_Igst + ' %</span></span><br /><span id="span_IgstValue' + n + '">' + parseFloat(IgstValue).toFixed(2) + '</td>'
             + '<td class="text_align_right td_nowrap"><span id="span_item_TotalTax' + n + '">' + parseFloat(TotalTax).toFixed(2) + '</span></td>'
             + '<td class="text_align_right td_nowrap"><span id="span_item_LineTotalAmount' + n + '">' + parseFloat(LineTotalAmount).toFixed(2) + '</span></td>'
             + '<td class="td_nowrap"><input checked onchange="calculateWasteCottonSalesSum()" type="checkbox" name="chk_seleitem[' + n + ']" id="chk_seleitem' + n + '" /></td>'
@@ -255,9 +255,9 @@ function WasteCottonSalesIgstCalc(){
                 + '<input readonly onfocus="this.select();" onkeypress="return numbersonly(event)" onchange="calc_lineItem(' + n + ')" class="txt_100 prodqty text_align_right" type="text" name="txt_prodqty[' + n + ']" id="txt_prodqty' + n + '" value="' + parseFloat(sprodcqty).toFixed(3) + '" />'
             + '</td>'
             + '<td class="text_align_right td_nowrap"><input class="txt_100 text_align_right prodvalue" type="text" name="prodvalue[' + n + ']" id="prodvalue' + n + '" value="' + sprodvalue + '" readonly="true" /></td>'
-            + '<td class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Sgst' + n + '">' + txt_item_Sgst + ' %</span></span><br /><span id="span_SgstValue' + n + '">' + parseFloat(SgstValue).toFixed(2) + '</td>'
-            + '<td class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Cgst' + n + '">' + txt_item_Cgst + ' %</span></span><br /><span id="span_CgstValue' + n + '">' + parseFloat(CgstValue).toFixed(2) + '</td>'
-            + '<td class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Igst' + n + '">' + txt_item_Igst + ' %</span></span><br /><span id="span_IgstValue' + n + '">' + parseFloat(IgstValue).toFixed(2) + '</td>'
+            + '<td hidden class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Sgst' + n + '">' + txt_item_Sgst + ' %</span></span><br /><span id="span_SgstValue' + n + '">' + parseFloat(SgstValue).toFixed(2) + '</td>'
+            + '<td hidden class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Cgst' + n + '">' + txt_item_Cgst + ' %</span></span><br /><span id="span_CgstValue' + n + '">' + parseFloat(CgstValue).toFixed(2) + '</td>'
+            + '<td hidden class="text_align_right td_nowrap"><span class="fontsize08 textcolor_deeppink"><span id="span_item_Igst' + n + '">' + txt_item_Igst + ' %</span></span><br /><span id="span_IgstValue' + n + '">' + parseFloat(IgstValue).toFixed(2) + '</td>'
             + '<td class="text_align_right td_nowrap"><span id="span_item_TotalTax' + n + '">' + parseFloat(TotalTax).toFixed(2) + '</span></td>'
             + '<td class="text_align_right td_nowrap"><span id="span_item_LineTotalAmount' + n + '">' + parseFloat(LineTotalAmount).toFixed(2) + '</span></td>'
             + '<td class="td_nowrap"><input checked onchange="calculateWasteCottonSalesSum()" type="checkbox" name="chk_seleitem[' + n + ']" id="chk_seleitem' + n + '" /></td>'
@@ -537,6 +537,30 @@ function CalcSaleOrderTotal(){
         document.getElementById("prodTotal").value = parseFloat(su).toFixed(2);
     }
     catch(e){
+        alert(e.name + "\n" + e.message + "\n" + e.lineNumber);
+    }
+}
+
+function ListSecUom(sel, AddFunNo){
+    try {
+        var fr = sel.options[sel.selectedIndex].value;
+        var fro = fr.split('*');
+        document.getElementById("txt_U_ItemUomId").value = fro[0];
+        document.getElementById("txt_U_UomId").value = fro[1];
+        document.getElementById("txt_U_UomName").value = fro[2];
+        document.getElementById("txt_U_pUomId").value = fro[3];
+        document.getElementById("txt_U_pUomName").value = fro[4];
+        document.getElementById("txt_U_sUomId").value = fro[5];
+        document.getElementById("txt_U_sUomName").value = fro[6];
+        document.getElementById("txt_u_pValue").value = fro[7];
+        document.getElementById("txt_u_sValue").value = fro[8];
+        document.getElementById("txt_u_IsLooseBagCalc").value = fro[9];
+        document.getElementById("cmb_a_sUom").value = fro[5];
+        calc_SaleOrder_cQty();
+        $("#prodprice").focus();
+    }
+    catch(e)
+    {
         alert(e.name + "\n" + e.message + "\n" + e.lineNumber);
     }
 }
