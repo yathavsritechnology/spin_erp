@@ -269,6 +269,7 @@ function calculateSalesSum()
         var tot_cgst = 0;
         var tot_igst = 0;
         var sqty = 0;
+        var sprodqty = 0;
         var n = $("#sivTable tr.appear").size();
         var table = document.getElementById('sivTable');
         var rowCount = table.rows.length;
@@ -280,7 +281,8 @@ function calculateSalesSum()
                 var k = row.id.replace( /[^\d.]/g, '');
                 if(document.getElementById('chk_active'+k).checked == true)
                 {
-                    var pQty = document.getElementById('txt_isQty'+k).value;
+                    var pQty = (document.getElementById('txt_prodqty'+k).value == "") ? 0 : document.getElementById('txt_prodqty'+k).value;
+                    var spQty = (document.getElementById('sprodqty'+k).value == "") ? 0 : document.getElementById('sprodqty'+k).value;
                     //var pQty = (document.getElementById('sprodqty'+k).value == "") ? 0 : document.getElementById('sprodqty'+k).value;
                     var LineTotalAmount = (document.getElementById('LineTotalAmount'+k).value == "") ? 0 : document.getElementById('LineTotalAmount'+k).value;
                     var prodvalue = (document.getElementById('prodvalue'+k).value == "") ? 0 : document.getElementById('prodvalue'+k).value;
@@ -288,6 +290,7 @@ function calculateSalesSum()
                     var CgstValue = (document.getElementById('CgstValue'+k).value == "") ? 0 : document.getElementById('CgstValue'+k).value;
                     var IgstValue = (document.getElementById('IgstValue'+k).value == "") ? 0 : document.getElementById('IgstValue'+k).value;
                     sqty += parseFloat(pQty);
+                    sprodqty += parseFloat(spQty);
                     stot += parseFloat(prodvalue);
                     tot_sgst += parseFloat(SgstValue);
                     tot_cgst += parseFloat(CgstValue);
@@ -299,6 +302,7 @@ function calculateSalesSum()
         }
         document.getElementById('billtotal').value=parseFloat(stot).toFixed(2);
         document.getElementById('totqty').value=sqty.toFixed(2);
+        document.getElementById('TotalsQty').value=sprodqty.toFixed(2);
         document.getElementById('txt_CgstAmount').value = parseFloat(tot_cgst).toFixed(2);
         document.getElementById('txt_SgstAmount').value = parseFloat(tot_sgst).toFixed(2);
         document.getElementById('txt_IgstAmount').value = parseFloat(tot_igst).toFixed(2);
@@ -330,10 +334,21 @@ function CalcSalesLineTotal(n)
         var txt_C_CountryId = (document.getElementById("txt_Comp_CountryId").value == "") ? 0 : document.getElementById("txt_Comp_CountryId").value;
         var txt_S_StateId = (document.getElementById("txt_C_StateId").value == "") ? 0 : document.getElementById("txt_C_StateId").value;
         var txt_S_CountryId = (document.getElementById("txt_C_CountryId").value == "") ? 0 : document.getElementById("txt_C_CountryId").value;
-        var txt_Rate = (document.getElementById('txt_Rate'+n).value == "") ? 0 : document.getElementById('txt_Rate'+n).value;
+        var txt_Rate = (document.getElementById('prodprice'+n).value == "") ? 0 : document.getElementById('prodprice'+n).value;
         //var prodqty = (document.getElementById('prodqty'+n).value == "") ? 0 : document.getElementById('prodqty'+n).value;
-        var prodqty = (document.getElementById('txt_isQty'+n).value == "") ? 0 : document.getElementById('txt_isQty'+n).value;
-        var ss = parseFloat(txt_Rate) * parseFloat(prodqty);
+        var prodqty = (document.getElementById('txt_prodqty'+n).value == "") ? 0 : document.getElementById('txt_prodqty'+n).value;
+        var sprodqty = (document.getElementById('sprodqty'+n).value == "") ? 0 : document.getElementById('sprodqty'+n).value;
+        var txt_sValue = (document.getElementById('txt_sValue'+n).value == "") ? 0 : document.getElementById('txt_sValue'+n).value;
+        var txt_IsLooseBagCalc = (document.getElementById('txt_IsLooseBagCalc'+n).value == "") ? 0 : document.getElementById('txt_IsLooseBagCalc'+n).value;
+        var qq = 0;
+        if(txt_IsLooseBagCalc == 1){
+            qq = parseFloat(parseFloat(prodqty) * parseFloat(txt_sValue)).toFixed(3);
+        }
+        else{
+            qq = parseFloat(parseFloat(sprodqty) * parseFloat(txt_sValue)).toFixed(3);
+        }
+        document.getElementById("txt_prodqty"+n).value = parseFloat(qq).toFixed(3);
+        var ss = parseFloat(txt_Rate) * parseFloat(qq);
         var item_TaxId = (document.getElementById('item_TaxId'+n).value == "") ? 0 : document.getElementById('item_TaxId'+n).value;
         var item_Sgst = (document.getElementById('item_Sgst'+n).value == "") ? 0 : document.getElementById('item_Sgst'+n).value;
         var item_Cgst = (document.getElementById('item_Cgst'+n).value == "") ? 0 : document.getElementById('item_Cgst'+n).value;

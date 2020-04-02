@@ -61,6 +61,13 @@
 							<td valign="top" style="border-right:1px solid #000;width:50%;padding:2px;">Transport :<br /><b><?= $this->TransportMode ?></b></td>
 							<td valign="top" style="width:50%;padding:2px;">Vehicle No :<br /><b><?= $this->VehicleNo ?></b></td>
 						</tr>
+						<tr style="border-bottom:1px solid #000;height:30px;">
+							<td valign="top" style="border-right:1px solid #000;width:50%;padding:2px;">Lot No :<br /><b><?= $this->LotNo ?></b></td>
+							<td valign="top" style="width:50%;padding:2px;">EWay Bill :<br /><b><?= $this->EwayBillNo ?></b></td>
+						</tr>
+                        <tr style="height:30px;border-bottom:1px solid #000;">
+                            <td style="height:10px;padding:2px;" valign="top" colspan="2">Bale Detail :<br /><?= $this->BaleDetails; ?></td>
+                        </tr>
 						<tr style="height:30px;">
 							<td style="height:10px;padding:2px;" valign="top" colspan="2">Remarks:<br /><?= $this->SaleRemarks; ?></td>
 						</tr>
@@ -204,6 +211,7 @@
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;"><b><?= $this->RoundOff; ?></b></td>
 						</tr>
 						<?php
@@ -214,6 +222,7 @@
 						?>
 						<tr style="border-bottom:0 solid #000;height:15px;page-break-inside:avoid; page-break-after:auto">
 							<td style="border-right:1px solid #000;padding:2px;">&nbsp;</td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
@@ -347,8 +356,39 @@
 			<tr class="border-bottom:0px solid #000;">
 				<td colspan="2" valign="top" style="margin:0;padding:0;border-left:1px solid #000;border-right:1px solid #000;border-bottom:0px solid #000;">
 					<table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:auto;">
-						<tr style="border-bottom:0px solid #000;"><td style="width:100%;padding:2px;">Tax Amount (in words) : <b><?= $this->WordsTaxAmount; ?></b></td></tr>
-						<tr style="border-bottom:0px solid #000;"><td style="width:100%;padding-top:10px;">Company's PAN : <b><?= $this->Comp_PANno; ?></b><br />Declaration : <br />Goods once sold can't be taken back. Subject to Tirupur Jurisdiction. Interest @ 24% will be charged, if nor paid within 30 days.</td></tr>
+						<tr style="border-bottom:0px solid #000;"><td colspan="2" style="width:100%;padding:2px;">Tax Amount (in words) : <b><?= $this->WordsTaxAmount; ?></b></td></tr>
+						<tr style="border-bottom:0px solid #000;">
+                            <td style="padding-top:10px;width:50%;">Company's PAN : <b><?= $this->Comp_PANno; ?></b><br />Declaration : <br />Goods once sold can't be taken back. Subject to Tirupur Jurisdiction. Interest @ 24% will be charged, if nor paid within 30 days.</td>
+                            <td style="padding-top:10px;width:50%;">
+                                <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:auto;">
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left" style="width:38%;">Bank Name</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left" style="width:62%;"><?= $this->CompBankName ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left">Branch</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left"><?= $this->CompBranchName ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left">Account Number</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left"><?= $this->CompAccNo ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left">Bank IFSC</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left"><?= $this->CompIfscCode ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left borderbtm">Account Type</td>
+                                        <td valign="top" class="text_align_left borderbtm">:</td>
+                                        <td valign="top" class="text_align_left borderbtm"><?= $this->CompAccType ?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 					</table>
 				</td>
 			</tr>

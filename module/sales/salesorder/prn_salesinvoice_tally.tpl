@@ -78,8 +78,9 @@
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Description of Goods</td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">HSN/SAC</td>
 							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Quantity</td>
-							<td style="border-right:1px solid #000;padding:2px;text-align:center;">Rate</td>
-							<td style="border-right:1px solid #000;padding:2px;text-align:center;">UOM</td>
+                            <td style="border-right:1px solid #000;padding:2px;text-align:center;">UOM</td>
+                            <td style="border-right:1px solid #000;padding:2px;text-align:center;">Bag / Cones</td>
+                            <td style="border-right:1px solid #000;padding:2px;text-align:center;">Rate</td>
 							<td style="text-align:center;">Amount</td>
 						</tr>
 						</thead>
@@ -93,9 +94,10 @@
 							<td style="border-right:1px solid #000;padding:2px;"><?= $n ?></td>
 							<td style="border-right:1px solid #000;padding:2px;"><b><?= $ItemName ?></b></td>
 							<td style="border-right:1px solid #000;padding:2px;"><?= $rHsnCode ?></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rQty ?></b></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rRate ?></b></td>
-							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><?= $rUomName; ?></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rQty ?></b></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><?= $rUomName; ?></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $sQty ?></b><br /><span style="font-size:10px;">(<?= $sUomName ?>)</span></td>
+                            <td style="text-align:right;border-right:1px solid #000;padding:2px;"><b><?= $rRate ?></b></td>
 							<td style="text-align:right;padding:2px;"><b><?= $rTotal ?></b></td>
 						</tr>
                         <?php
@@ -103,6 +105,7 @@
                         ?>
 						<tr style="border-bottom:0px solid #000;height:25px;">
 							<td style="border-right:1px solid #000;padding:2px;">&nbsp;</td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
@@ -117,6 +120,7 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:5px 2px 5px 2px;border-top:1px solid #000;border-bottom:1px solid #000;"><b><?= $this->_Total; ?></b></td>
 						</tr>
 						<tr style="height:15px;">
@@ -126,6 +130,7 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;"><b><?= $this->tSgstValue; ?></b></td>
 						</tr>
 						<tr style="border-bottom:0px solid #000;height:15px;">
@@ -134,6 +139,7 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;"><b><?= $this->tCgstValue; ?></b></td>
 						</tr>
@@ -145,6 +151,7 @@
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"><b>Round Off</b></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;border-right:1px solid #000;padding:2px;"></td>
 							<td style="text-align:right;padding:2px;"><b><?= $this->RoundOff; ?></b></td>
@@ -162,6 +169,7 @@
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td style="border-right:1px solid #000;padding:2px;"></td>
+							<td style="border-right:1px solid #000;padding:2px;"></td>
 							<td></td>
 						</tr>
 						<?php
@@ -169,15 +177,16 @@
 						?>
 						</tbody>
 						<tfoot>
-						<tr style="border-top:1px solid #000;height:15px;page-break-inside:avoid; page-break-after:auto;">
-							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="border-right:1px solid #000;padding:2px;text-align:right;"><b>Total</b></td>
-							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->TotalQty); ?></b></td>
-							<td style="text-align:right;padding:2px;border-right:1px solid #000;"></td>
-							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="text-align:right;padding:2px;font-weight:bold;"><?= $this->GrandTotal; ?></td>
-						</tr>
+                        <tr style="border-top:1px solid #000;height:15px;page-break-inside:avoid; page-break-after:auto;">
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;text-align:right;"><b>Total</b></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_TotalQty); ?></b></td>
+                            <td style="text-align:right;padding:2px;border-right:1px solid #000;"></td>
+                            <td style="text-align:right;padding:2px;border-right:1px solid #000;"><b><?= sprintf("%0.3f", $this->_sTotalQty); ?></b></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="text-align:right;padding:2px;font-weight:bold;"><?= $this->GrandTotal; ?></td>
+                        </tr>
 						</tfoot>
 					</table>
 				</td>
@@ -197,60 +206,131 @@
 			</tr>
 			<tr>
 				<td colspan="2" valign="top" style="margin:0;padding:0;border-left:1px solid #000;border-right:1px solid #000;border-bottom:1px solid #000;">
-					<table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:100%;page-break-inside:avoid; page-break-after:auto;">
-						<tr>
-							<td style="border-right:1px solid #000;text-align: center;padding:2px;">HSN/SAC</td>
-							<td style="border-right:1px solid #000;text-align: center;padding:2px;">Taxable Value</td>
-							<td style="border-right:1px solid #000;text-align: center;padding:2px;" colspan="2">CGST</td>
-							<td style="border-right:0px solid #000;text-align: center;padding:2px;" colspan="2">SGST</td>
-							<!--<td colspan="2">IGST</td>-->
-						</tr>
-						<tr style="border-bottom:1px solid #000;">
-							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="border-right:1px solid #000;padding:2px;"></td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Rate</td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Amount</td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Rate</td>
-							<td style="border-right:0px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Amount</td>
-							<!--<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;">Rate</td>
-							<td style="border-top:1px solid #000;text-align: center;">Amount</td>-->
-						</tr>
-						<?php
+                    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:100%;page-break-inside:avoid; page-break-after:auto;">
+                        <tr>
+                            <td style="border-right:1px solid #000;text-align: center;padding:2px;">HSN/SAC</td>
+                            <td style="border-right:1px solid #000;text-align: center;padding:2px;">Taxable Value</td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
+                            <td style="border-right:1px solid #000;text-align: center;padding:2px;" colspan="2">CGST</td>
+                            <td style="border-right:0px solid #000;text-align: center;padding:2px;" colspan="2">SGST</td>
+                            <?php
+                            }
+                            else{
+                            ?>
+                            <td colspan="2">IGST</td>
+                            <?php
+                            }
+                            ?>
+                        </tr>
+                        <tr style="border-bottom:1px solid #000;">
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;padding:2px;"></td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Rate</td>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Amount</td>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Rate</td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: center;padding:2px;">Amount</td>
+                            <?php
+                            }
+                            else{
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: center;">Rate</td>
+                            <td style="border-top:1px solid #000;text-align: center;">Amount</td>
+                            <?php
+                            }
+                            ?>
+                        </tr>
+                        <?php
 						foreach($this->data_tax as $row_tax){
-						extract($row_tax);
-						?>
-						<tr style="border-bottom:1px solid #000;">
-							<td style="border-right:1px solid #000;padding:2px;"><?= $tHsnCode ?></td>
-							<td style="border-right:1px solid #000;text-align:right;padding:2px;"><?= $tTaxableValue ?></td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tCgstPer ?>%</td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tCgstValue ?></td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tSgstPer ?>%</td>
-							<td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tSgstValue ?></td>
-							<!--<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;">Rate</td>
-							<td style="border-top:1px solid #000;text-align: right;">Amount</td>-->
-						</tr>
-						<?php
+                        extract($row_tax);
+                        ?>
+                        <tr style="border-bottom:1px solid #000;">
+                            <td style="border-right:1px solid #000;padding:2px;"><?= $tHsnCode ?></td>
+                            <td style="border-right:1px solid #000;text-align:right;padding:2px;"><?= $tTaxableValue ?></td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tCgstPer ?>%</td>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tCgstValue ?></td>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tSgstPer ?>%</td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tSgstValue ?></td>
+                            <?php
+                            }
+                            else{
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tIgstPer ?>%</td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"><?= $tIgstValue ?></td>
+                            <?php
+                            }
+                            ?>
+                        </tr>
+                        <?php
 						}
 						?>
-						<tr>
-							<td style="border-right:1px solid #000;text-align:right;font-weight:bold;padding:2px;">Total</td>
-							<td style="border-right:1px solid #000;text-align:right;font-weight:bold;padding:2px;"><?= $this->TaxValueAmt; ?></td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->CgstAmt; ?></td>
-							<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
-							<td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->SgstAmt; ?></td>
-							<!--<td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;">Rate</td>
-							<td style="border-top:1px solid #000;text-align: right;">Amount</td>-->
-						</tr>
-					</table>
+                        <tr>
+                            <td style="border-right:1px solid #000;text-align:right;font-weight:bold;padding:2px;">Total</td>
+                            <td style="border-right:1px solid #000;text-align:right;font-weight:bold;padding:2px;"><?= $this->TaxValueAmt; ?></td>
+                            <?php
+                            if($this->IgstAmt == 0){
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->CgstAmt; ?></td>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->SgstAmt; ?></td>
+                            <?php
+                            }
+                            else{
+                            ?>
+                            <td style="border-right:1px solid #000;border-top:1px solid #000;text-align: right;padding:2px;"></td>
+                            <td style="border-right:0px solid #000;border-top:1px solid #000;text-align: right;font-weight:bold;padding:2px;"><?= $this->IgstAmt; ?></td>
+                            <?php
+                            }
+                            ?>
+                        </tr>
+                    </table>
 				</td>
 			</tr>
 			<tr class="border-bottom:0px solid #000;">
 				<td colspan="2" valign="top" style="margin:0;padding:0;border-left:1px solid #000;border-right:1px solid #000;border-bottom:0px solid #000;">
-					<table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:auto;">
-						<tr style="border-bottom:0px solid #000;"><td style="width:100%;padding:2px;">Tax Amount (in words) : <b><?= $this->WordsTaxAmount; ?></b></td></tr>
-						<tr style="border-bottom:0px solid #000;"><td style="width:100%;padding-top:10px;">Company's PAN : <b><?= $this->Comp_PANno; ?></b><br />Declaration : <br />Goods once sold can't be taken back. Subject to Tirupur Jurisdiction. Interest @ 24% will be charged, if nor paid within 30 days.</td></tr>
-					</table>
+                    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:auto;">
+                        <tr style="border-bottom:0px solid #000;"><td colspan="2" style="width:100%;padding:2px;">Tax Amount (in words) : <b><?= $this->WordsTaxAmount; ?></b></td></tr>
+                        <tr style="border-bottom:0px solid #000;">
+                            <td style="padding-top:10px;width:50%;">Company's PAN : <b><?= $this->Comp_PANno; ?></b><br />Declaration : <br />Goods once sold can't be taken back. Subject to Tirupur Jurisdiction. Interest @ 24% will be charged, if nor paid within 30 days.</td>
+                            <td style="padding-top:10px;width:50%;">
+                                <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:verdana;font-size:12px;width:100%;height:auto;">
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left" style="width:38%;">Bank Name</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left" style="width:62%;"><?= $this->CompBankName ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left">Branch</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left"><?= $this->CompBranchName ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left">Account Number</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left"><?= $this->CompAccNo ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left">Bank IFSC</td>
+                                        <td valign="top" class="text_align_left">:</td>
+                                        <td valign="top" class="text_align_left"><?= $this->CompIfscCode ?></td>
+                                    </tr>
+                                    <tr class="" style="">
+                                        <td valign="top" class="text_align_left borderbtm">Account Type</td>
+                                        <td valign="top" class="text_align_left borderbtm">:</td>
+                                        <td valign="top" class="text_align_left borderbtm"><?= $this->CompAccType ?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
 				</td>
 			</tr>
 			<tr class="border-bottom:0px solid #000;">
