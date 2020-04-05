@@ -1,3 +1,15 @@
+$(document).ready(function () {
+    try{
+        document.getElementById("txt_C_CustomerId").value = document.getElementById("txt_s_CustomerId").value;
+        document.getElementById("txt_C_CityId").value = document.getElementById("txt_s_CityId").value;
+        document.getElementById("txt_C_StateId").value = document.getElementById("txt_s_StateId").value;
+        document.getElementById("txt_C_CountryId").value = document.getElementById("txt_s_CountryId").value;
+    }
+    catch(e)
+    {
+        alert(e.name + "\n" + e.message + "\n" + e.lineNumber);
+    }
+});
 function AddSalesOrderProducts() {
     try{
         var txt_Comp_StateId = (document.getElementById("txt_Comp_StateId").value == "") ? 0 : document.getElementById("txt_Comp_StateId").value;
